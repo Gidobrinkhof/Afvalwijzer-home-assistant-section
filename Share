@@ -1,0 +1,697 @@
+type: grid
+cards:
+  - type: custom:mushroom-title-card
+    title: Afval
+    subtitle: >-
+      {{ states('sensor.afvalwijzer_next_type')| title }} over {{
+      states('sensor.afvalwijzer_next_in_days') }} {% if
+      is_state('sensor.afvalwijzer_next_in_days', '1') %}dag{% else %}dagen{%
+      endif %}.
+  - type: custom:swipe-card
+    card_width: 100px
+    start_card: 1
+    parameters:
+      spaceBetween: 8
+      slidesPerView: auto
+      freeMode: true
+      edgeSwipeDetection: true
+      touchMoveStopPropagation: false
+    cards:
+      - type: custom:button-card
+        variables:
+          day: 0
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: "[[[ return 'sensor.afvalwijzer_today' ]]]"
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.state.toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-today"; ]]]
+        name: |-
+          [[[ 
+            let v = entity.state.toLowerCase();
+            if (v === "restafval") return "Rest";
+            if (v === "geen") return "-";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.state.toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          label:
+            - font-size: 100%
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 1
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 2
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 3
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 4
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 5
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 6
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const days = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+            let ts;
+
+            ts = new Date();
+            ts.setDate(ts.getDate() + variables.day);
+
+            const d = days[ts.getDay()];
+            return `${d}-${ts.getDate()}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 7
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const months = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+            let ts;
+
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") {
+              ts = new Date();
+              ts.setDate(ts.getDate() + variables.day);
+            } else {
+              ts = new Date(entity.state);
+            }
+
+            const d = ts.getDate();
+            const m = months[ts.getMonth()];
+            return `${d}-${m}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 8
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const months = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+            let ts;
+
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") {
+              ts = new Date();
+              ts.setDate(ts.getDate() + variables.day);
+            } else {
+              ts = new Date(entity.state);
+            }
+
+            const d = ts.getDate();
+            const m = months[ts.getMonth()];
+            return `${d}-${m}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 9
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const months = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+            let ts;
+
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") {
+              ts = new Date();
+              ts.setDate(ts.getDate() + variables.day);
+            } else {
+              ts = new Date(entity.state);
+            }
+
+            const d = ts.getDate();
+            const m = months[ts.getMonth()];
+            return `${d}-${m}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 10
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const months = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+            let ts;
+
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") {
+              ts = new Date();
+              ts.setDate(ts.getDate() + variables.day);
+            } else {
+              ts = new Date(entity.state);
+            }
+
+            const d = ts.getDate();
+            const m = months[ts.getMonth()];
+            return `${d}-${m}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
+      - type: custom:button-card
+        variables:
+          day: 11
+        show_name: true
+        show_label: true
+        layout: icon_label
+        aspect_ratio: 1/1
+        template: garbage_btn
+        entity: |-
+          [[[ 
+            const e = Object.values(states)
+              .filter(s => s.entity_id.startsWith("sensor.afvalwijzer_"))
+              .filter(s => !["sensor.afvalwijzer_next_in_days","sensor.afvalwijzer_next_date"].includes(s.entity_id))
+              .filter(s => s.attributes?.days_until_collection_date === variables.day)
+              .at(-1);
+
+            return e ? e.entity_id : "sensor.afvalwijzer_next_in_days";
+          ]]]
+        icon: |-
+          [[[ if (!entity) return "mdi:recycle";
+              const v = entity.entity_id.split("_")[1].toLowerCase();
+              if (v === "restafval" || v === "rest") return "mdi:trash-can";
+              if (v === "papier") return "mdi:note-outline";
+              if (v === "pmd") return "mdi:bottle-soda-classic-outline";
+              if (v === "gft") return "mdi:leaf";
+              return "mdi:calendar-remove"; ]]]
+        name: |-
+          [[[ 
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") return "-";
+            let v = entity.entity_id.split("_")[1].toLowerCase();
+            if (v === "restafval") return "Rest";
+            return v.charAt(0).toUpperCase() + v.slice(1);
+          ]]]
+        label: |-
+          [[[ 
+            const months = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+            let ts;
+
+            if (!entity || entity.entity_id === "sensor.afvalwijzer_next_in_days") {
+              ts = new Date();
+              ts.setDate(ts.getDate() + variables.day);
+            } else {
+              ts = new Date(entity.state);
+            }
+
+            const d = ts.getDate();
+            const m = months[ts.getMonth()];
+            return `${d}-${m}`;
+          ]]]
+        styles:
+          card:
+            - background-color: |-
+                [[[ const v = entity.entity_id.split("_")[1].toLowerCase();
+                    if (v === "restafval" || v === "rest") return "#646469";
+                    if (v === "papier") return "#0070cd";
+                    if (v === "pmd") return "#FF6b0b";
+                    if (v === "gft") return "#41873e";
+                ]]]
+          name:
+            - font-size: 20px
